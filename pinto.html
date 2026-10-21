@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE WORLD NEEDS TO FILL | Live Aid 2027</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .font-grunge {
+            font-family: 'Impact', 'Arial Narrow', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Header */
+        header { text-align: center; padding: 40px 0 20px; position: relative; }
+
+        .live-aid {
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            font-weight: 300;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .live-aid::before, .live-aid::after {
+            content: ""; height: 1px; width: 50px; background: #fff;
+            display: inline-block; margin: 0 15px; opacity: 0.3;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 15vw, 9rem);
+            line-height: 0.85;
+            margin: 20px 0;
+            position: relative;
+            transform: rotate(-2deg);
+        }
+        .hero-title span {
+            display: block;
+            color: #f2f2f2;
+            text-shadow: 3px 3px 0px #b30000, -1px -1px 0 #000;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3));
+        }
+        .hero-title .highlight-red {
+            color: #d90000;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+            margin-top: 40px;
+        }
+
+        .left-col { position: relative; }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #d90000;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transform: rotate(-5deg);
+            display: inline-block;
+            border-bottom: 3px solid #d90000;
+            padding-bottom: 5px;
+        }
+
+        .lineup-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+            border-left: 4px solid #d90000;
+            padding-left: 15px;
+        }
+
+        .lineup-list {
+            list-style: none;
+            font-size: 1.8rem;
+            line-height: 1.4;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #cccccc;
+        }
+        .lineup-list li {
+            position: relative;
+            padding-left: 20px;
+            transition: color 0.3s;
+        }
+        .lineup-list li::before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: #d90000;
+            font-size: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .lineup-list li:hover { color: #ffffff; text-shadow: 0 0 8px rgba(255, 0, 0, 0.6); }
+        .headliner { color: #ffffff; font-size: 2.2rem; }
+
+        .right-col {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(200, 0, 0, 0.1);
+        }
+
+        .hand-icon {
+            font-size: 10rem;
+            color: #d90000;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.6));
+            transform: rotate(-15deg);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: rotate(-15deg) scale(1); }
+            50% { transform: rotate(-15deg) scale(1.05); }
+            100% { transform: rotate(-15deg) scale(1); }
+        }
+
+        .event-info {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #333;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 100%;
+        }
+        .event-info p { margin: 5px 0; font-size: 1.1rem; color: #aaa; }
+        .event-info strong { color: #fff; font-size: 1.3rem; display: block; margin-bottom: 5px; }
+        .event-info .location {
+            color: #d90000;
+            font-weight: bold;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Cause Section */
+        .cause-section {
+            margin-top: 60px;
+            background: linear-gradient(90deg, #1a0000 0%, #0a0a0a 100%);
+            padding: 30px;
+            border-left: 5px solid #d90000;
+            text-align: center;
+            position: relative;
+        }
+        .cause-section h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .cause-section p {
+            font-size: 1.2rem;
+            color: #bbb;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .cause-section .highlight { color: #d90000; font-weight: bold; }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background-color: #d90000;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            border: 2px solid #fff;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(217, 0, 0, 0.4);
+            transform: skewX(-5deg);
+        }
+        .cta-button:hover {
+            background-color: #fff;
+            color: #d90000;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid #222;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+            .hero-title { font-size: 4rem; }
+            .lineup-list { font-size: 1.4rem; }
+            .headliner { font-size: 1.8rem; }
+            .hand-icon { font-size: 6rem; }
+            .image-placeholder { height: 250px; }
+            .live-aid::before, .live-aid::after { width: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="live-aid">LIVE AID 2027</div>
+            <h1 class="hero-title font-grunge">
+                <span>THE WORLD</span>
+                <span class="highlight-red">NEEDS TO FILL</span>
+            </h1>
+        </header>
+
+        <div class="main-content">
+            <div class="left-col">
+                <div class="tagline">GRANDES NOMES DO ROCK INTERNACIONAL</div>
+                
+                <h2 class="lineup-title font-grunge">LINE-UP</h2>
+                <ul class="lineup-list">
+                    <li class="headliner">The 1703</li>
+                    <li class="headliner">Radiohead</li>
+                    <li>Beabadoobee</li>
+                    <li>Deftones</li>
+                    <li>Alex G</li>
+                </ul>
+
+                <a href="#" class="cta-button font-grunge">Garanta seu Ingresso</a>
+            </div>
+
+            <div class="right-col">
+                <div class="image-placeholder">
+                    <div class="hand-icon">🤘</div>
+                </div>
+                
+                <div class="event-info">
+                    <p><strong>Data:</strong> 2027 (Data a confirmar)</p>
+                    <p class="location">MICHIGAN STADIUM (THE BIG HOUSE)</p>
+                    <p>Ann Arbor, Michigan - EUA</p>
+                    <p>Capacidade: 107.601 lugares</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="cause-section">
+            <h2 class="font-grunge">Todos por uma Causa</h2>
+            <p>
+                A campanha <span class="highlight">"THE WORLD NEEDS TO FILL"</span> tem como causa social a 
+                <span class="highlight">promoção da Saúde Mental</span> e o 
+                <span class="highlight">combate à solidão e à depressão entre os jovens</span>.
+                Juntos, podemos preencher o vazio com música, apoio e comunidade.
+            </p>
+        </section>
+
+        <footer>
+            <p>&copy; 2027 Live Aid. Todos os direitos reservados. | Design inspirado no rock clássico.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
