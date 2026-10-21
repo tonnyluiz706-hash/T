@@ -300,6 +300,9 @@
         .artist-info { width: 100%; padding: 20px 0 0; border-bottom: 1px solid rgba(242, 238, 229, 0.2); }
         .artist-info h3 { margin-bottom: 8px; color: var(--yellow); font-family: 'Barlow Condensed', Impact, sans-serif; font-size: 1.8rem; text-transform: uppercase; }
         .artist-info p { padding-bottom: 20px; color: #c7c2b8; line-height: 1.6; }
+        .artist-info .artist-photo-credit { padding: 0 0 16px; color: var(--muted); font-size: 0.75rem; }
+        .artist-photo-credit a { color: var(--paper); text-underline-offset: 3px; }
+        .artist-photo-credit[hidden] { display: none; }
         .event-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; padding: 18px 0 0; margin-top: 24px; border: 0; border-top: 1px solid rgba(242, 238, 229, 0.2); border-radius: 0; background: transparent; text-align: left; }
         .event-info p { margin: 0; color: var(--muted); font-size: 0.9rem; }
         .event-info strong { display: block; margin-bottom: 4px; color: var(--paper); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -384,6 +387,10 @@
                 <div class="artist-info" aria-live="polite" aria-atomic="true">
                     <h3 id="artist-name">Conheça o line-up</h3>
                     <p id="artist-bio">Selecione o nome de um artista para ver sua foto e conhecer um pouco mais sobre ele.</p>
+                    <p class="artist-photo-credit" id="artist-photo-credit" hidden>
+                        Foto: <a id="artist-photo-source" target="_blank" rel="noopener noreferrer"></a>
+                        · Licença <a id="artist-photo-license" target="_blank" rel="noopener noreferrer"></a>
+                    </p>
                 </div>
                 
                 <div class="event-info">
@@ -423,26 +430,42 @@
         const artists = {
             'the-1703': {
                 name: 'The 1703',
-                bio: 'The 1703 é uma das atrações anunciadas para o Live Aid 2027. Mais informações sobre o artista serão divulgadas em breve.'
+                bio: 'Não encontrei uma fonte confiável para identificar este artista. Envie um perfil ou site oficial para eu usar a foto certa.'
             },
             radiohead: {
                 name: 'Radiohead',
-                page: 'Radiohead',
+                image: 'assets/artists/radiohead.jpg',
+                source: 'https://commons.wikimedia.org/wiki/File:2025_Radiohead_live_concert_at_Uber_Arena,_Berlin_01.jpg',
+                author: 'Raph_PH',
+                license: 'CC BY 4.0',
+                licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
                 bio: 'Banda britânica formada em 1985, conhecida por reinventar o rock alternativo em álbuns como OK Computer e Kid A.'
             },
             beabadoobee: {
                 name: 'Beabadoobee',
-                page: 'Beabadoobee',
+                image: 'assets/artists/beabadoobee.jpg',
+                source: 'https://commons.wikimedia.org/wiki/File:Beabadoobee_%40_The_Fonda_11_21_2021_(51783552576).jpg',
+                author: 'Justin Higuchi',
+                license: 'CC BY 2.0',
+                licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
                 bio: 'Beatrice Laus, conhecida como Beabadoobee, é uma cantora e compositora filipino-britânica que mistura indie rock, pop e influências dos anos 1990.'
             },
             deftones: {
                 name: 'Deftones',
-                page: 'Deftones',
+                image: 'assets/artists/deftones.jpg',
+                source: 'https://commons.wikimedia.org/wiki/File:Chino_Moreno_2014.jpg',
+                author: 'Ralph Arvesen',
+                license: 'CC BY 2.0',
+                licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
                 bio: 'Formado em Sacramento em 1988, o Deftones combina metal alternativo e atmosferas experimentais em discos como White Pony.'
             },
             'alex-g': {
                 name: 'Alex G',
-                page: 'Alex G',
+                image: 'assets/artists/alex-g.jpg',
+                source: 'https://commons.wikimedia.org/wiki/File:Alex_G,_Fader_Fort_Presented_by_Converse,_SXSW_2015-7288_(24986357300).jpg',
+                author: 'Anna Hanks',
+                license: 'CC BY 2.0',
+                licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
                 bio: 'Alex G é o nome artístico do cantor, compositor e multi-instrumentista americano Alexander Giannascoli, conhecido por seu trabalho no indie rock.'
             }
         };
@@ -452,10 +475,13 @@
         const artistImage = document.querySelector('.image-placeholder img');
         const imageStatus = document.querySelector('.image-status');
         const imageLabel = document.querySelector('.image-label');
+        const photoCredit = document.getElementById('artist-photo-credit');
+        const photoSource = document.getElementById('artist-photo-source');
+        const photoLicense = document.getElementById('artist-photo-license');
         let imageRequest = 0;
 
         artistButtons.forEach((button) => {
-            button.addEventListener('click', async () => {
+            button.addEventListener('click', () => {
                 const artist = artists[button.dataset.artist];
                 const request = ++imageRequest;
 
@@ -467,34 +493,36 @@
                 imageLabel.textContent = artist.name;
                 artistImage.hidden = true;
                 imageStatus.hidden = false;
-                imageStatus.textContent = artist.page ? 'Carregando foto...' : 'Foto do artista indisponível.';
+                artistImage.onload = null;
+                artistImage.onerror = null;
 
-                if (!artist.page) return;
+                if (!artist.image) {
+                    artistImage.removeAttribute('src');
+                    imageStatus.textContent = 'Foto indisponível — envie um perfil oficial.';
+                    photoCredit.hidden = true;
+                    return;
+                }
 
-                try {
-                    const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(artist.page)}`);
-                    if (!response.ok) throw new Error(`Wikipedia image request failed: ${response.status}`);
-                    const summary = await response.json();
+                photoSource.href = artist.source;
+                photoSource.textContent = `${artist.author} · Wikimedia Commons`;
+                photoLicense.href = artist.licenseUrl;
+                photoLicense.textContent = artist.license;
+                photoCredit.hidden = false;
+                imageStatus.textContent = 'Carregando foto...';
+                artistImage.alt = `Foto de ${artist.name}`;
+                artistImage.onload = () => {
                     if (request !== imageRequest) return;
-                    if (!summary.thumbnail?.source) {
-                        imageStatus.textContent = 'Foto do artista indisponível.';
-                        return;
-                    }
-                    artistImage.onload = () => {
-                        if (request !== imageRequest) return;
-                        artistImage.hidden = false;
-                        imageStatus.hidden = true;
-                    };
-                    artistImage.onerror = () => {
-                        if (request !== imageRequest) return;
-                        imageStatus.textContent = 'Não foi possível carregar a foto.';
-                    };
-                    artistImage.src = summary.thumbnail.source;
-                    artistImage.alt = `Foto de ${artist.name}`;
-                } catch (error) {
+                    artistImage.hidden = false;
+                    imageStatus.hidden = true;
+                };
+                artistImage.onerror = () => {
                     if (request !== imageRequest) return;
-                    console.error('Não foi possível carregar a foto do artista.', error);
+                    console.error(`Não foi possível carregar a foto local de ${artist.name}.`);
                     imageStatus.textContent = 'Não foi possível carregar a foto.';
+                };
+                artistImage.src = artist.image;
+                if (artistImage.complete && artistImage.naturalWidth > 0) {
+                    artistImage.onload();
                 }
             });
         });
